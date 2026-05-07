@@ -1,817 +1,629 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Strategic AI Advisor &amp; Architect — Focus Group</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg:        #070a0f;
-    --bg2:       #0c1018;
-    --surface:   #111720;
-    --surface2:  #16202e;
-    --border:    rgba(255,255,255,0.07);
-    --border2:   rgba(255,255,255,0.12);
-    --gold:      #c4a35a;
-    --gold-dim:  rgba(196,163,90,0.10);
-    --gold-mid:  rgba(196,163,90,0.22);
-    --gold-glow: rgba(196,163,90,0.06);
-    --text:      #e8eaf0;
-    --text2:     #9aa3b5;
-    --text3:     #5c6880;
-    --white:     #ffffff;
-    --radius:    14px;
-    --radius-sm: 8px;
+  /* ── DARK MODE (default) — original gold palette ── */
+  :root,
+  [data-theme="dark"] {
+    --bg:     #070a0f;
+    --text:   #e8eaf0;
+    --text2:  #9aa3b5;
+    --text3:  #5c6880;
+    --gold:   #c4a35a;
+    --g-soft: rgba(196,163,90,0.07);
+    --rule:   rgba(255,255,255,0.07);
+    --rule-s: rgba(255,255,255,0.13);
   }
 
+  /* ── LIGHT MODE ── */
+  [data-theme="light"] {
+    --bg:     #f8f5ef;
+    --text:   #1c1a17;
+    --text2:  #6b6560;
+    --text3:  #a59e97;
+    --gold:   #9a7828;
+    --g-soft: rgba(154,120,40,0.08);
+    --rule:   rgba(28,25,23,0.11);
+    --rule-s: rgba(28,25,23,0.20);
+  }
+
+  /* ── TRANSITIONS ── */
+  html { transition: background-color 0.32s ease; }
+
+  body,
+  body *:not(.theme-btn):not(.theme-btn *) {
+    transition:
+      background-color 0.32s ease,
+      color            0.32s ease,
+      border-color     0.32s ease,
+      opacity          0.32s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, html { transition-duration: 0.01ms !important; }
+  }
+
+  /* ── BASE ── */
   html { scroll-behavior: smooth; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-weight: 300;
     line-height: 1.7;
-    min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
 
-  /* ── BACKGROUND ── */
-  .bg-layer {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .bg-gradient {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(196,163,90,0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 0% 60%, rgba(30,60,120,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 100% 40%, rgba(30,40,80,0.06) 0%, transparent 60%);
-  }
-
-  .bg-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 30%, transparent 80%);
-  }
-
-  /* ── WRAPPER ── */
   .page {
-    position: relative;
-    z-index: 1;
-    max-width: 720px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 60px 24px 80px;
+    padding: 68px 44px 110px;
   }
 
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(22px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  @keyframes shimmer {
-    0%   { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-
-  .reveal {
-    opacity: 0;
-    animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
-  }
-
-  .d1 { animation-delay: 0.05s; }
-  .d2 { animation-delay: 0.15s; }
-  .d3 { animation-delay: 0.25s; }
-  .d4 { animation-delay: 0.35s; }
-  .d5 { animation-delay: 0.45s; }
-  .d6 { animation-delay: 0.55s; }
-  .d7 { animation-delay: 0.65s; }
-  .d8 { animation-delay: 0.75s; }
-  .d9 { animation-delay: 0.85s; }
-
-  /* ── HEADER ── */
-  .header {
-    text-align: center;
-    padding-bottom: 52px;
-    margin-bottom: 52px;
-    position: relative;
-  }
-
-  .header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  }
-
-  .logo-wrap {
+  /* ── HEADER BAR ── */
+  .hd {
     display: flex;
-    justify-content: center;
-    margin-bottom: 36px;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 80px;
   }
 
-  .logo-svg {
-    width: 72px;
-    height: 72px;
-    filter: drop-shadow(0 0 20px rgba(196,163,90,0.15));
-  }
+  .hd-logo { width: 68px; height: 68px; opacity: 0.72; }
+  .hd-logo .logo-counter { fill: var(--bg); }
 
-  .draft-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gold);
-    border: 1px solid var(--gold-mid);
-    background: var(--gold-dim);
-    padding: 6px 16px;
-    border-radius: 20px;
-    margin-bottom: 28px;
-  }
-
-  .draft-badge::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--gold);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%       { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  .role-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(30px, 6vw, 46px);
-    font-weight: 400;
-    color: var(--white);
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-    margin-bottom: 10px;
-  }
-
-  .role-title em {
-    font-style: italic;
-    color: var(--gold);
-  }
-
-  .role-org {
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 22px;
-  }
-
-  .header-meta {
+  .hd-right-group {
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .meta-chip {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--text3);
-    letter-spacing: 0.08em;
-  }
-
-  .meta-chip span {
-    color: var(--text2);
-  }
-
-  /* ── SECTIONS ── */
-  .section {
-    margin-bottom: 40px;
-  }
-
-  .section-label {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 20px;
-  }
-
-  .section-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-    text-transform: uppercase;
-    flex-shrink: 0;
-  }
-
-  .section-line {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(20px, 4vw, 26px);
-    font-weight: 400;
-    color: var(--white);
-    letter-spacing: -0.01em;
-    margin-bottom: 14px;
-    line-height: 1.2;
-  }
-
-  .section-body {
-    font-size: 14px;
-    font-weight: 300;
-    color: var(--text2);
-    line-height: 1.8;
-  }
-
-  .section-body p + p {
-    margin-top: 12px;
-  }
-
-  /* ── PURPOSE CARD ── */
-  .purpose-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px 30px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .purpose-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold-mid), transparent);
-  }
-
-  .purpose-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(16px, 3.5vw, 20px);
-    font-weight: 300;
-    font-style: italic;
-    color: var(--text);
-    line-height: 1.75;
-    letter-spacing: 0.01em;
-  }
-
-  /* ── ITEM LIST ── */
-  .item-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-    display: grid;
-    grid-template-columns: auto 1fr;
+    align-items: flex-start;
     gap: 16px;
-    align-items: start;
-    transition: border-color 0.2s, background 0.2s;
   }
 
-  .item:hover {
-    border-color: var(--border2);
-    background: var(--surface2);
+  .hd-right { text-align: right; }
+
+  .hd-status {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
   }
 
-  .item-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
-    background: var(--gold-dim);
-    border: 1px solid var(--gold-mid);
+  .hd-date {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--rule-s);
+    background: transparent;
+    cursor: pointer;
+    color: var(--text3);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     margin-top: 1px;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease !important;
   }
 
-  .item-icon svg {
-    width: 16px;
-    height: 16px;
-    stroke: var(--gold);
-    fill: none;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  .theme-btn:hover {
+    color: var(--gold);
+    border-color: rgba(196,163,90,0.4);
+    background: var(--g-soft);
   }
 
-  .item-content {}
+  .theme-btn svg {
+    width: 13px;
+    height: 13px;
+    pointer-events: none;
+  }
 
-  .item-title {
-    font-size: 13px;
+  /* Dark default: show sun (switch to light) */
+  .icon-sun  { display: block; }
+  .icon-moon { display: none; }
+
+  [data-theme="light"] .icon-sun  { display: none; }
+  [data-theme="light"] .icon-moon { display: block; }
+
+  /* ── TITLE BLOCK ── */
+  .title-block { margin-bottom: 72px; }
+
+  .eyebrow {
+    font-size: 9px;
     font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.2;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 9vw, 68px);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
     color: var(--text);
-    margin-bottom: 4px;
-    letter-spacing: 0.01em;
+    margin-bottom: 24px;
   }
 
-  .item-desc {
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--text2);
-    line-height: 1.65;
+  h1 em {
+    font-style: italic;
+    color: var(--gold);
   }
 
-  /* ── ENGAGEMENT GRID ── */
-  .eng-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .org-name {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  /* ── DIVIDER ── */
+  .main-rule {
+    height: 1px;
+    background: var(--rule-s);
+    margin: 52px 0;
+  }
+
+  /* ── SECTIONS ── */
+  .section { margin-bottom: 64px; }
+
+  .sec-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
     gap: 12px;
   }
 
-  @media (max-width: 480px) {
-    .eng-grid { grid-template-columns: 1fr; }
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
   }
 
-  .eng-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-    transition: border-color 0.2s;
-  }
-
-  .eng-card:hover {
-    border-color: var(--border2);
-  }
-
-  .eng-card.featured {
-    border-color: var(--gold-mid);
-    background: var(--gold-glow);
-  }
-
-  .eng-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 8px;
-  }
-
-  .eng-card.featured .eng-label {
-    color: var(--gold);
-  }
-
-  .eng-value {
+  h2 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
+    font-size: clamp(26px, 5vw, 34px);
     font-weight: 400;
-    color: var(--white);
-    line-height: 1.2;
-    margin-bottom: 4px;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 24px;
   }
 
-  .eng-card.featured .eng-value {
-    color: var(--gold);
+  .intro-text {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.82;
+    margin-bottom: 28px;
+    max-width: 520px;
   }
 
-  .eng-sub {
-    font-size: 12px;
+  /* ── PURPOSE BLOCK ── */
+  .purpose-block {
+    border-left: 2px solid var(--gold);
+    padding: 2px 0 2px 26px;
+    margin-bottom: 22px;
+  }
+
+  .purpose-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(17px, 3.2vw, 22px);
     font-weight: 300;
-    color: var(--text3);
-    line-height: 1.5;
+    font-style: italic;
+    line-height: 1.72;
+    color: var(--text);
   }
 
-  /* ── TBD PLACEHOLDER ── */
-  .tbd-row {
+  .draft-note {
+    margin-top: 18px;
+    padding: 13px 20px;
+    border: 1px dashed rgba(196,163,90,0.22);
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: rgba(196,163,90,0.04);
-    border: 1px dashed rgba(196,163,90,0.2);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    margin-top: 12px;
+    gap: 12px;
   }
 
-  .tbd-dot {
-    width: 8px;
-    height: 8px;
+  [data-theme="light"] .draft-note {
+    border-color: rgba(154,120,40,0.22);
+  }
+
+  .draft-note-dot {
+    width: 5px; height: 5px;
     border-radius: 50%;
     background: var(--gold);
     opacity: 0.6;
     flex-shrink: 0;
   }
 
-  .tbd-text {
-    font-size: 12px;
-    font-weight: 300;
+  .draft-note-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
     font-style: italic;
     color: var(--gold);
-    opacity: 0.8;
+    opacity: 0.78;
   }
 
-  /* ── ENABLES LIST ── */
-  .enables-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+  /* ── ITEM ROWS ── */
+  .item-row {
+    padding: 22px 0;
+    border-top: 1px solid var(--rule);
   }
 
-  .enables-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--border);
+  .item-row:last-child { border-bottom: 1px solid var(--rule); }
+
+  .item-row-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
   }
 
-  .enables-item:last-child {
-    border-bottom: none;
-  }
-
-  .enables-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 300;
-    color: var(--gold);
-    opacity: 0.6;
-    line-height: 1;
-    flex-shrink: 0;
-    padding-top: 2px;
-    min-width: 24px;
-  }
-
-  .enables-text {
-    font-size: 14px;
+  .item-row-desc {
+    font-size: 13px;
     font-weight: 300;
     color: var(--text2);
-    line-height: 1.7;
+    line-height: 1.78;
   }
 
-  .enables-text strong {
+  /* ── ENGAGEMENT ROWS ── */
+  .eng-row {
+    display: grid;
+    grid-template-columns: 128px 1fr;
+    gap: 20px;
+    padding: 20px 0;
+    border-top: 1px solid var(--rule);
+    align-items: start;
+  }
+
+  .eng-row:last-child { border-bottom: 1px solid var(--rule); }
+
+  .eng-key {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding-top: 5px;
+  }
+
+  .eng-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .eng-val.em { color: var(--gold); }
+
+  .eng-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+
+  /* ── ENABLES ── */
+  .enables-row {
+    padding: 22px 0;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .enables-row:last-child { border-bottom: 1px solid var(--rule); }
+
+  .enables-roman {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--gold);
+    opacity: 0.55;
+    padding-top: 2px;
+    letter-spacing: 0.04em;
+  }
+
+  .enables-body {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text2);
+    line-height: 1.78;
+  }
+
+  .enables-body strong {
     font-weight: 500;
     color: var(--text);
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    letter-spacing: 0.01em;
   }
 
   /* ── FOOTER ── */
   .footer {
-    margin-top: 64px;
-    padding-top: 32px;
-    border-top: 1px solid var(--border);
+    margin-top: 88px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule-s);
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 12px;
   }
 
-  .footer-logo {
-    opacity: 0.35;
-  }
+  .footer-logo { width: 30px; height: 30px; opacity: 0.22; }
+  .footer-logo .logo-counter { fill: var(--bg); }
 
-  .footer-logo svg {
-    width: 32px;
-    height: 32px;
-  }
-
-  .footer-text {
-    font-size: 11px;
-    font-weight: 300;
+  .footer-meta {
+    font-size: 10px;
+    font-weight: 400;
     color: var(--text3);
-    letter-spacing: 0.08em;
-    text-align: right;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 600px) {
-    .page { padding: 40px 18px 60px; }
-    .header { padding-bottom: 40px; margin-bottom: 40px; }
-    .purpose-card { padding: 22px 20px; }
-    .item { padding: 18px 18px; gap: 12px; }
-    .eng-card { padding: 18px 18px; }
+    .page { padding: 44px 22px 88px; }
+    h1 { font-size: 38px; }
+    .eng-row { grid-template-columns: 1fr; gap: 4px; }
+    .hd { margin-bottom: 56px; }
   }
 </style>
 </head>
 <body>
-
-<div class="bg-layer">
-  <div class="bg-gradient"></div>
-  <div class="bg-grid"></div>
-</div>
-
 <div class="page">
 
-  <!-- HEADER -->
-  <div class="header reveal d1">
-    <div class="logo-wrap">
-      <!-- Focus logo — black bg polygon removed, white elements render on dark surface -->
-      <svg class="logo-svg" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-        <path d="M503.01,283.91 C506.72,284.1 510.6,285.04 514.27,284.61 C531.46,282.43 549.21,284.28 565.78,289.2 C594.01,297.66 619.01,316.12 635.34,340.67 C649.23,361.29 656.88,386.11 656.78,410.99 C657.02,431.57 651.98,452.2 642.44,470.42 C631.07,492.31 613.22,510.66 591.75,522.76 C567.72,536.35 539.37,541.85 512,538.29 C487.65,541.46 462.35,537.41 440.2,526.81 C419.66,517.05 401.83,501.73 389.13,482.87 C376.94,464.92 369.46,443.76 367.74,422.12 C365.78,398.75 370.33,374.9 380.99,353.99 C393.11,330.01 412.93,310.06 436.89,297.88 C457.13,287.42 480.28,282.61 503.01,283.91 Z" fill="#FFFFFF"/>
-        <path d="M500.52,287.03 C504.24,286.21 508.18,285.28 512,285.23 C516.01,285.26 520.13,286.24 524.04,287.11 C538.96,290.48 553.26,296.55 566.05,304.96 C587.39,318.88 604.35,339.3 614.11,362.84 C622.84,383.83 625.79,407.23 622.47,429.73 C619.25,452.7 609.38,474.73 594.57,492.56 C576.69,514.29 551.5,529.79 524.04,535.93 C518.61,537.11 513.55,538.4 507.95,537.47 C487.33,534.11 467.59,525.71 450.96,513.05 C430.86,497.89 415.36,476.6 407.22,452.76 C399.56,430.54 398.27,406.24 403.52,383.33 C408.28,362.13 418.67,342.34 433.24,326.24 C450.91,306.63 474.72,292.69 500.52,287.03 Z" fill="var(--bg)"/>
-        <path d="M360.32,631.25 C374.74,629.54 390.17,633.34 401.73,642.27 C412.25,650.3 419.35,662.39 421.5,675.42 C423.73,688.56 421.65,702.34 414.86,713.88 C407.95,725.72 396.27,734.41 383.06,737.99 C375.24,740.02 367.16,740.84 359.13,739.62 C344.42,737.78 330.64,730.13 321.99,718 C308.2,698.97 308.34,671.26 322.42,652.43 C331.34,640.29 345.43,632.82 360.32,631.25 Z" fill="#FFFFFF"/>
-        <path d="M526.02,631.46 C534.47,632.49 543.35,635.54 549.92,641.09 C555.1,645.5 558.74,651.48 558.63,658.46 L555.79,658.68 C554.6,655.23 554.34,651.87 552.29,648.72 C547.35,641.18 539.09,637.44 530.5,635.75 C519.84,633.71 507.89,634.97 498.33,640.33 C490.5,644.68 484.48,651.66 480.84,659.8 C476.61,669.31 475.35,679.72 475.95,690.04 C476.46,698.51 478.49,706.96 482.55,714.45 C487.31,723.18 495.09,730.17 504.51,733.52 C516.29,737.67 530.09,737.03 541.22,731.23 C547.65,728.03 552.36,722.97 556.33,717.1 C557.54,717.01 558.75,716.94 559.97,716.87 C556.02,725.05 549.07,731.07 540.99,734.99 C520.84,744.57 494.95,740.53 478.55,725.44 C463.18,711.35 457.92,688.77 463.97,669 C467.47,657.36 475.09,646.93 485.31,640.29 C497.1,632.47 512.07,629.43 526.02,631.46 Z" fill="#FFFFFF"/>
-        <path d="M784.56,631.62 C793.19,633.19 801.21,637.39 806.34,644.66 C808.98,648.57 810.88,653.55 810.49,658.33 L807.7,658.81 C806.76,655.04 806.28,651.12 804.28,647.73 C800.5,641.01 793.19,636.76 785.8,635.2 C778.38,633.67 770.31,634.26 763.34,637.3 C758.92,639.3 754.91,642.23 752.53,646.54 C750.12,650.77 749.6,655.94 751.53,660.45 C753.62,665.27 757.51,668.44 761.88,671.12 C772.8,677.73 786.24,681.05 797.25,686.75 C803.14,689.84 808.96,693.83 812.13,699.86 C814.96,705.06 815.16,711.42 814.06,717.12 C812.01,726.03 805.35,732.54 797.14,736.09 C786.14,740.73 773.39,741.42 761.91,738.19 C754.29,736.04 746.55,731.64 741.94,725.06 C738.88,720.95 737.47,716.15 737.26,711.07 C738.34,711.01 739.42,710.96 740.5,710.92 C741.17,714.63 741.68,718.08 743.6,721.41 C746.33,726.16 750.75,730 755.66,732.38 C764.19,736.69 774.45,737.57 783.74,735.69 C790.19,734.36 796.9,731.31 800.8,725.8 C803.98,721.39 804.77,715.48 802.53,710.48 C800.38,705.66 796.41,702.64 792,700.01 C780.09,693.14 766.42,690.03 754.39,682.61 C749.45,679.5 745.11,675.88 742.36,670.62 C738.01,662.26 739.18,651.38 745.03,644.03 C749.53,638.31 755.93,634.63 762.87,632.7 C769.97,630.82 777.31,630.17 784.56,631.62 Z" fill="#FFFFFF"/>
-        <path d="M209.51,632.57 C233.3,632.34 257.29,632.52 281.11,632.49 C281.12,633.51 281.13,634.53 281.13,635.55 C261.83,635.68 242.52,635.45 223.22,635.66 C223.2,651.99 223.14,668.33 223.25,684.66 C238.54,684.77 253.84,684.58 269.13,684.74 C269.08,685.73 269.03,686.72 268.99,687.71 C253.75,687.83 238.5,687.59 223.26,687.82 C223.1,703.23 223.25,718.65 223.2,734.06 C223.15,735.55 223.03,737.03 222.88,738.51 C218.4,738.57 213.93,738.58 209.44,738.49 C209.3,704.65 209.46,670.79 209.36,636.94 C209.37,635.47 209.37,634.04 209.51,632.57 Z" fill="#FFFFFF"/>
-        <path d="M604.86,632.47 C609.26,632.45 613.65,632.44 618.05,632.48 C618.5,654.64 618.04,676.86 618.27,699.04 C618.38,706.46 619.96,713.68 623.99,719.99 C627.9,726.2 634.02,730.72 640.95,733.03 C646.54,735 652.15,735.07 658,734.82 C666.87,734.47 675.82,730.4 681.46,723.47 C686.6,717.28 688.99,708.94 689.32,701.02 C689.39,678.17 689.22,655.31 689.4,632.46 C690.57,632.44 691.75,632.43 692.92,632.41 C693.47,636.29 693.26,640.1 693.27,644 C693.27,661.67 693.27,679.33 693.28,697 C693.17,706.4 691.79,715.47 686.42,723.42 C681.5,730.98 673.74,735.98 665.11,738.31 C649.18,742.56 629.35,739.6 617.2,727.8 C610.57,721.51 606.47,712.98 605.19,703.96 C604.44,698.91 604.66,694.08 604.64,689 C604.65,673.67 604.65,658.34 604.64,643 C604.61,639.49 604.55,635.98 604.86,632.47 Z" fill="#FFFFFF"/>
-        <path d="M360.44,634.61 C370.05,633.34 379.73,634.67 387.93,640.07 C396.92,645.84 402.6,655.42 405.49,665.53 C408.92,677.96 409.03,691.33 405.94,703.85 C403.63,712.76 399.39,721.23 392.47,727.46 C379.33,739.56 357.01,740.06 343.21,728.8 C336.97,723.89 332.54,716.55 329.84,709.17 C326.34,699.3 325.45,688.35 326.39,677.96 C327.35,667.68 330.28,657.82 336.38,649.39 C342.02,641.52 350.87,636.08 360.44,634.61 Z" fill="var(--bg)"/>
-      </svg>
-    </div>
+  <!-- HEADER BAR -->
+  <div class="hd">
 
-    <div class="draft-badge">For Discussion · Draft</div>
+    <svg class="hd-logo" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <path d="M503.01,283.91 C506.72,284.1 510.6,285.04 514.27,284.61 C531.46,282.43 549.21,284.28 565.78,289.2 C594.01,297.66 619.01,316.12 635.34,340.67 C649.23,361.29 656.88,386.11 656.78,410.99 C657.02,431.57 651.98,452.2 642.44,470.42 C631.07,492.31 613.22,510.66 591.75,522.76 C567.72,536.35 539.37,541.85 512,538.29 C487.65,541.46 462.35,537.41 440.2,526.81 C419.66,517.05 401.83,501.73 389.13,482.87 C376.94,464.92 369.46,443.76 367.74,422.12 C365.78,398.75 370.33,374.9 380.99,353.99 C393.11,330.01 412.93,310.06 436.89,297.88 C457.13,287.42 480.28,282.61 503.01,283.91 Z" fill="currentColor"/>
+      <path class="logo-counter" d="M500.52,287.03 C504.24,286.21 508.18,285.28 512,285.23 C516.01,285.26 520.13,286.24 524.04,287.11 C538.96,290.48 553.26,296.55 566.05,304.96 C587.39,318.88 604.35,339.3 614.11,362.84 C622.84,383.83 625.79,407.23 622.47,429.73 C619.25,452.7 609.38,474.73 594.57,492.56 C576.69,514.29 551.5,529.79 524.04,535.93 C518.61,537.11 513.55,538.4 507.95,537.47 C487.33,534.11 467.59,525.71 450.96,513.05 C430.86,497.89 415.36,476.6 407.22,452.76 C399.56,430.54 398.27,406.24 403.52,383.33 C408.28,362.13 418.67,342.34 433.24,326.24 C450.91,306.63 474.72,292.69 500.52,287.03 Z"/>
+      <path d="M360.32,631.25 C374.74,629.54 390.17,633.34 401.73,642.27 C412.25,650.3 419.35,662.39 421.5,675.42 C423.73,688.56 421.65,702.34 414.86,713.88 C407.95,725.72 396.27,734.41 383.06,737.99 C375.24,740.02 367.16,740.84 359.13,739.62 C344.42,737.78 330.64,730.13 321.99,718 C308.2,698.97 308.34,671.26 322.42,652.43 C331.34,640.29 345.43,632.82 360.32,631.25 Z" fill="currentColor"/>
+      <path d="M526.02,631.46 C534.47,632.49 543.35,635.54 549.92,641.09 C555.1,645.5 558.74,651.48 558.63,658.46 L555.79,658.68 C554.6,655.23 554.34,651.87 552.29,648.72 C547.35,641.18 539.09,637.44 530.5,635.75 C519.84,633.71 507.89,634.97 498.33,640.33 C490.5,644.68 484.48,651.66 480.84,659.8 C476.61,669.31 475.35,679.72 475.95,690.04 C476.46,698.51 478.49,706.96 482.55,714.45 C487.31,723.18 495.09,730.17 504.51,733.52 C516.29,737.67 530.09,737.03 541.22,731.23 C547.65,728.03 552.36,722.97 556.33,717.1 C557.54,717.01 558.75,716.94 559.97,716.87 C556.02,725.05 549.07,731.07 540.99,734.99 C520.84,744.57 494.95,740.53 478.55,725.44 C463.18,711.35 457.92,688.77 463.97,669 C467.47,657.36 475.09,646.93 485.31,640.29 C497.1,632.47 512.07,629.43 526.02,631.46 Z" fill="currentColor"/>
+      <path d="M784.56,631.62 C793.19,633.19 801.21,637.39 806.34,644.66 C808.98,648.57 810.88,653.55 810.49,658.33 L807.7,658.81 C806.76,655.04 806.28,651.12 804.28,647.73 C800.5,641.01 793.19,636.76 785.8,635.2 C778.38,633.67 770.31,634.26 763.34,637.3 C758.92,639.3 754.91,642.23 752.53,646.54 C750.12,650.77 749.6,655.94 751.53,660.45 C753.62,665.27 757.51,668.44 761.88,671.12 C772.8,677.73 786.24,681.05 797.25,686.75 C803.14,689.84 808.96,693.83 812.13,699.86 C814.96,705.06 815.16,711.42 814.06,717.12 C812.01,726.03 805.35,732.54 797.14,736.09 C786.14,740.73 773.39,741.42 761.91,738.19 C754.29,736.04 746.55,731.64 741.94,725.06 C738.88,720.95 737.47,716.15 737.26,711.07 C738.34,711.01 739.42,710.96 740.5,710.92 C741.17,714.63 741.68,718.08 743.6,721.41 C746.33,726.16 750.75,730 755.66,732.38 C764.19,736.69 774.45,737.57 783.74,735.69 C790.19,734.36 796.9,731.31 800.8,725.8 C803.98,721.39 804.77,715.48 802.53,710.48 C800.38,705.66 796.41,702.64 792,700.01 C780.09,693.14 766.42,690.03 754.39,682.61 C749.45,679.5 745.11,675.88 742.36,670.62 C738.01,662.26 739.18,651.38 745.03,644.03 C749.53,638.31 755.93,634.63 762.87,632.7 C769.97,630.82 777.31,630.17 784.56,631.62 Z" fill="currentColor"/>
+      <path d="M209.51,632.57 C233.3,632.34 257.29,632.52 281.11,632.49 C281.12,633.51 281.13,634.53 281.13,635.55 C261.83,635.68 242.52,635.45 223.22,635.66 C223.2,651.99 223.14,668.33 223.25,684.66 C238.54,684.77 253.84,684.58 269.13,684.74 C269.08,685.73 269.03,686.72 268.99,687.71 C253.75,687.83 238.5,687.59 223.26,687.82 C223.1,703.23 223.25,718.65 223.2,734.06 C223.15,735.55 223.03,737.03 222.88,738.51 C218.4,738.57 213.93,738.58 209.44,738.49 C209.3,704.65 209.46,670.79 209.36,636.94 C209.37,635.47 209.37,634.04 209.51,632.57 Z" fill="currentColor"/>
+      <path d="M604.86,632.47 C609.26,632.45 613.65,632.44 618.05,632.48 C618.5,654.64 618.04,676.86 618.27,699.04 C618.38,706.46 619.96,713.68 623.99,719.99 C627.9,726.2 634.02,730.72 640.95,733.03 C646.54,735 652.15,735.07 658,734.82 C666.87,734.47 675.82,730.4 681.46,723.47 C686.6,717.28 688.99,708.94 689.32,701.02 C689.39,678.17 689.22,655.31 689.4,632.46 C690.57,632.44 691.75,632.43 692.92,632.41 C693.47,636.29 693.26,640.1 693.27,644 C693.27,661.67 693.27,679.33 693.28,697 C693.17,706.4 691.79,715.47 686.42,723.42 C681.5,730.98 673.74,735.98 665.11,738.31 C649.18,742.56 629.35,739.6 617.2,727.8 C610.57,721.51 606.47,712.98 605.19,703.96 C604.44,698.91 604.66,694.08 604.64,689 C604.65,673.67 604.65,658.34 604.64,643 C604.61,639.49 604.55,635.98 604.86,632.47 Z" fill="currentColor"/>
+      <path class="logo-counter" d="M360.44,634.61 C370.05,633.34 379.73,634.67 387.93,640.07 C396.92,645.84 402.6,655.42 405.49,665.53 C408.92,677.96 409.03,691.33 405.94,703.85 C403.63,712.76 399.39,721.23 392.47,727.46 C379.33,739.56 357.01,740.06 343.21,728.8 C336.97,723.89 332.54,716.55 329.84,709.17 C326.34,699.3 325.45,688.35 326.39,677.96 C327.35,667.68 330.28,657.82 336.38,649.39 C342.02,641.52 350.87,636.08 360.44,634.61 Z"/>
+    </svg>
 
-    <h1 class="role-title">Strategic AI <em>Advisor</em> &amp; Architect</h1>
-    <div class="role-org">Focus Group</div>
-
-    <div class="header-meta">
-      <div class="meta-chip">Prepared <span>May 2026</span></div>
-      <div class="meta-chip">·</div>
-      <div class="meta-chip">To be finalised <span>together</span></div>
+    <div class="hd-right-group">
+      <div class="hd-right">
+        <div class="hd-status">Draft · For Discussion</div>
+        <div class="hd-date">May 2026</div>
+      </div>
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
     </div>
   </div>
 
+  <!-- TITLE BLOCK -->
+  <div class="title-block">
+    <div class="eyebrow">Strategic Role Brief</div>
+    <h1>Strategic AI<br><em>Advisor</em> &amp; Architect</h1>
+    <div class="org-name">Focus Group</div>
+  </div>
+
+  <div class="main-rule"></div>
+
   <!-- 01 PURPOSE -->
-  <div class="section reveal d2">
-    <div class="section-label">
-      <div class="section-num">01</div>
-      <div class="section-line"></div>
+  <div class="section" id="purpose">
+    <div class="sec-label">01 · Purpose</div>
+    <h2>Purpose</h2>
+    <div class="purpose-block">
+      <p class="purpose-text">To own the AI infrastructure, tooling strategy, and technical architecture that the Surge Intelligence platform is built upon — ensuring the foundations are properly designed, implemented, and maintained so the operational team can execute with confidence.</p>
     </div>
-    <h2 class="section-title">Purpose</h2>
-    <div class="purpose-card">
-      <p class="purpose-text">
-        To own the AI infrastructure, tooling strategy, and technical architecture that the Surge Intelligence platform is built upon — ensuring the foundations are properly designed, implemented, and maintained so the operational team can execute with confidence.
-      </p>
-    </div>
-    <div class="tbd-row" style="margin-top:14px;">
-      <div class="tbd-dot"></div>
-      <div class="tbd-text">Working title open to refinement based on our conversation</div>
+    <div class="draft-note">
+      <div class="draft-note-dot"></div>
+      <div class="draft-note-text">Working title open to refinement based on our conversation</div>
     </div>
   </div>
 
   <!-- 02 DOMAIN AUTHORITY -->
-  <div class="section reveal d3">
-    <div class="section-label">
-      <div class="section-num">02</div>
-      <div class="section-line"></div>
-    </div>
-    <h2 class="section-title">Domain Authority</h2>
-    <div class="section-body" style="margin-bottom:18px;">
-      <p>The areas where this role holds the lead view and architectural ownership.</p>
-    </div>
-    <div class="item-list">
-
-      <div class="item">
-        <div class="item-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        </div>
-        <div class="item-content">
-          <div class="item-title">AI Tooling Selection &amp; Configuration</div>
-          <div class="item-desc">Ruflo setup and orchestration, Claude API integration, AI video and production tools, and any future additions to the AI layer. Selection, configuration, and ongoing management.</div>
-        </div>
+  <div class="section" id="domain">
+    <div class="sec-label">02 · Domain Authority</div>
+    <h2>Domain Authority</h2>
+    <p class="intro-text">The areas where this role holds the lead view and architectural ownership.</p>
+    <div class="item-rows">
+      <div class="item-row">
+        <div class="item-row-title">AI Tooling Selection &amp; Configuration</div>
+        <div class="item-row-desc">Ruflo (or equivalent) setup and orchestration, Claude API integration, custom AI solutions and production tools, and any future additions to the AI layer. Selection, configuration, and ongoing management.</div>
       </div>
-
-      <div class="item">
-        <div class="item-icon">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-        </div>
-        <div class="item-content">
-          <div class="item-title">Technical Infrastructure</div>
-          <div class="item-desc">Environment setup, Supabase architecture, Vercel and GitHub configuration, and API key management across Anthropic, PandaDoc, Microsoft Graph, and Xero.</div>
-        </div>
+      <div class="item-row">
+        <div class="item-row-title">Technical Infrastructure</div>
+        <div class="item-row-desc">Environment setup, Supabase architecture, Vercel and GitHub configuration, and API key management across Anthropic, PandaDoc, Microsoft Graph, and Xero.</div>
       </div>
-
-      <div class="item">
-        <div class="item-icon">
-          <svg viewBox="0 0 24 24"><path d="M3 3h6l2 3h10a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M12 10v6M9 13l3-3 3 3"/></svg>
-        </div>
-        <div class="item-content">
-          <div class="item-title">Architecture Validation</div>
-          <div class="item-desc">Confirming the platform's build sequence, data model, tech stack decisions, and integration design are sound before execution begins. The sign-off layer before code is written.</div>
-        </div>
+      <div class="item-row">
+        <div class="item-row-title">Architecture Validation</div>
+        <div class="item-row-desc">Confirming the platform's build sequence, data model, tech stack decisions, and integration design are sound before execution begins. The sign-off layer before code is written.</div>
       </div>
-
-      <div class="item">
-        <div class="item-icon">
-          <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
-        </div>
-        <div class="item-content">
-          <div class="item-title">Staging &amp; Quality Environment</div>
-          <div class="item-desc">Designing and maintaining the staging environment that mirrors production — the foundation for all testing, UAT, and quality assurance before deployment.</div>
-        </div>
+      <div class="item-row">
+        <div class="item-row-title">Staging &amp; Quality Environment</div>
+        <div class="item-row-desc">Designing and maintaining the staging environment that mirrors production — the foundation for all testing, UAT, and quality assurance before deployment.</div>
       </div>
-
     </div>
   </div>
 
   <!-- 03 ONGOING CONTRIBUTIONS -->
-  <div class="section reveal d4">
-    <div class="section-label">
-      <div class="section-num">03</div>
-      <div class="section-line"></div>
-    </div>
-    <h2 class="section-title">Ongoing Contributions</h2>
-    <div class="section-body" style="margin-bottom:18px;">
-      <p>Recurring strategic input beyond the initial build phase.</p>
-    </div>
-    <div class="item-list">
-
-      <div class="item">
-        <div class="item-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-        </div>
-        <div class="item-content">
-          <div class="item-title">AI Tooling Strategy</div>
-          <div class="item-desc">Staying ahead of new tools and capabilities that can accelerate the build or enhance the platform's intelligence layer — bringing relevant opportunities to the team before they become obvious.</div>
-        </div>
+  <div class="section" id="ongoing">
+    <div class="sec-label">03 · Ongoing Contributions</div>
+    <h2>Ongoing Contributions</h2>
+    <p class="intro-text">Recurring strategic input beyond the initial build phase.</p>
+    <div class="item-rows">
+      <div class="item-row">
+        <div class="item-row-title">AI Tooling Strategy</div>
+        <div class="item-row-desc">Staying ahead of new tools and capabilities that can accelerate the build or enhance the platform's intelligence layer — bringing relevant opportunities to the team before they become obvious.</div>
       </div>
-
-      <div class="item">
-        <div class="item-icon">
-          <svg viewBox="0 0 24 24"><path d="M2 20h20M4 20V10l8-7 8 7v10"/><path d="M10 20v-6h4v6"/></svg>
-        </div>
-        <div class="item-content">
-          <div class="item-title">Architecture Review</div>
-          <div class="item-desc">Periodic validation that the platform's technical foundations remain sound as it scales through each build phase. A checkpoint that protects the integrity of what's been built.</div>
-        </div>
+      <div class="item-row">
+        <div class="item-row-title">Architecture Review</div>
+        <div class="item-row-desc">Periodic validation that the platform's technical foundations remain sound as it scales through each build phase. A checkpoint that protects the integrity of what's been built.</div>
       </div>
-
-      <div class="item">
-        <div class="item-icon">
-          <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-        </div>
-        <div class="item-content">
-          <div class="item-title">Marketing AI Tooling</div>
-          <div class="item-desc">Finding and accessing the AI production tools — video, design, content generation — that give the team a competitive execution edge on the Surge Intelligence launch and ongoing campaigns.</div>
-        </div>
+      <div class="item-row">
+        <div class="item-row-title">Innovative Solution Concepts and Discovery</div>
+        <div class="item-row-desc">Identifying and shaping emerging AI opportunities that create unexpected value — translating frontier capability into concrete concepts for Focus and its clients before the window of advantage closes.</div>
       </div>
-
     </div>
   </div>
 
   <!-- 04 ENGAGEMENT MODEL -->
-  <div class="section reveal d5">
-    <div class="section-label">
-      <div class="section-num">04</div>
-      <div class="section-line"></div>
-    </div>
-    <h2 class="section-title">Engagement Model</h2>
-    <div class="section-body" style="margin-bottom:18px;">
-      <p>How this role is structured to deliver maximum output with full architectural focus.</p>
-    </div>
-
-    <div class="eng-grid">
-
-      <div class="eng-card featured">
-        <div class="eng-label">Working Days</div>
-        <div class="eng-value">Mon – Thu</div>
-        <div class="eng-sub">Four-day advisory engagement. Friday outside scope.</div>
+  <div class="section" id="engagement">
+    <div class="sec-label">04 · Engagement Model</div>
+    <h2>Engagement Model</h2>
+    <p class="intro-text">How this role is structured to deliver maximum output with full architectural focus.</p>
+    <div class="eng-rows">
+      <div class="eng-row">
+        <div class="eng-key">Working Days</div>
+        <div>
+          <div class="eng-val em">Mon – Thu</div>
+          <div class="eng-sub">Four-day advisory.</div>
+        </div>
       </div>
-
-      <div class="eng-card">
-        <div class="eng-label">Engagement Type</div>
-        <div class="eng-value">Advisory Retainer</div>
-        <div class="eng-sub">Scoped advisory arrangement — not embedded employment.</div>
+      <div class="eng-row">
+        <div class="eng-key">Meetings</div>
+        <div>
+          <div class="eng-val">Selective</div>
+          <div class="eng-sub">Milestone checkpoints and key decision gates. Async updates for daily stand-ups.</div>
+        </div>
       </div>
-
-      <div class="eng-card">
-        <div class="eng-label">Meetings</div>
-        <div class="eng-value">Selective</div>
-        <div class="eng-sub">Milestone checkpoints and key decision gates. Async updates for daily stand-ups.</div>
+      <div class="eng-row">
+        <div class="eng-key">Review Point</div>
+        <div>
+          <div class="eng-val">3 Months</div>
+          <div class="eng-sub">Engagement reviewed at 3 months. Pathway to 3 days as platform matures.</div>
+        </div>
       </div>
-
-      <div class="eng-card">
-        <div class="eng-label">Review Point</div>
-        <div class="eng-value">3 Months</div>
-        <div class="eng-sub">Engagement reviewed at 3 months. Pathway to 3 days as platform matures.</div>
-      </div>
-
-    </div>
-
-    <div class="tbd-row">
-      <div class="tbd-dot"></div>
-      <div class="tbd-text">Retainer terms and specific meeting cadence to be agreed</div>
     </div>
   </div>
 
   <!-- 05 TEAM -->
-  <div class="section reveal d6">
-    <div class="section-label">
-      <div class="section-num">05</div>
-      <div class="section-line"></div>
-    </div>
-    <h2 class="section-title">Team</h2>
-    <div class="item-list">
-      <div class="item">
-        <div class="item-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        </div>
-        <div class="item-content">
-          <div class="item-title">1 Execution Resource (short term)</div>
-          <div class="item-desc">One direct execution resource to support delivery. No day-to-day people management responsibilities — architectural input and direction only. Management of the broader team remains with Nick.</div>
-        </div>
+  <div class="section" id="team">
+    <div class="sec-label">05 · Team</div>
+    <h2>Team</h2>
+    <div class="item-rows">
+      <div class="item-row">
+        <div class="item-row-title">Execution/Delivery Resources (short-term)</div>
+        <div class="item-row-desc">Ramping down day-to-day people management responsibilities — architectural input and direction to become the sole focus.</div>
       </div>
     </div>
   </div>
 
   <!-- 06 WHAT THIS ENABLES -->
-  <div class="section reveal d7">
-    <div class="section-label">
-      <div class="section-num">06</div>
-      <div class="section-line"></div>
-    </div>
-    <h2 class="section-title">What This Enables for Focus</h2>
-    <div class="section-body" style="margin-bottom:20px;">
-      <p>The value this structure creates for the business and for the build.</p>
-    </div>
-
-    <div class="enables-list">
-
-      <div class="enables-item">
-        <div class="enables-num">I</div>
-        <div class="enables-text">
+  <div class="section" id="enables">
+    <div class="sec-label">06 · What This Enables</div>
+    <h2>What This Enables for Focus</h2>
+    <p class="intro-text">The value this structure creates for the business and for the build.</p>
+    <div>
+      <div class="enables-row">
+        <div class="enables-roman">I</div>
+        <div class="enables-body">
           <strong>Full command clarity for Nick</strong>
           Nick retains complete decision authority over the business, product direction, and team. The AI and infrastructure layer has its own dedicated owner — no gaps, no ambiguity.
         </div>
       </div>
-
-      <div class="enables-item">
-        <div class="enables-num">II</div>
-        <div class="enables-text">
+      <div class="enables-row">
+        <div class="enables-roman">II</div>
+        <div class="enables-body">
           <strong>A properly architected foundation from day one</strong>
           The platform is built on infrastructure that has been deliberately designed, not assembled on the fly. Every technical decision made before code is written, not after.
         </div>
       </div>
-
-      <div class="enables-item">
-        <div class="enables-num">III</div>
-        <div class="enables-text">
+      <div class="enables-row">
+        <div class="enables-roman">III</div>
+        <div class="enables-body">
           <strong>Protected, focused contribution</strong>
           Architecture and AI strategy work requires deep, uninterrupted focus. A bounded advisory engagement produces better output than fragmented operational presence.
         </div>
       </div>
-
-      <div class="enables-item">
-        <div class="enables-num">IV</div>
-        <div class="enables-text">
+      <div class="enables-row">
+        <div class="enables-roman">IV</div>
+        <div class="enables-body">
           <strong>An intelligence edge that compounds</strong>
           Having a dedicated AI tooling strategist ensures Focus always has access to the most effective tools and approaches — not just at launch, but as the landscape evolves.
         </div>
       </div>
-
     </div>
   </div>
 
   <!-- FOOTER -->
-  <div class="footer reveal d9">
-    <div class="footer-logo">
-      <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-        <path d="M503.01,283.91 C506.72,284.1 510.6,285.04 514.27,284.61 C531.46,282.43 549.21,284.28 565.78,289.2 C594.01,297.66 619.01,316.12 635.34,340.67 C649.23,361.29 656.88,386.11 656.78,410.99 C657.02,431.57 651.98,452.2 642.44,470.42 C631.07,492.31 613.22,510.66 591.75,522.76 C567.72,536.35 539.37,541.85 512,538.29 C487.65,541.46 462.35,537.41 440.2,526.81 C419.66,517.05 401.83,501.73 389.13,482.87 C376.94,464.92 369.46,443.76 367.74,422.12 C365.78,398.75 370.33,374.9 380.99,353.99 C393.11,330.01 412.93,310.06 436.89,297.88 C457.13,287.42 480.28,282.61 503.01,283.91 Z" fill="#FFFFFF"/>
-        <path d="M500.52,287.03 C504.24,286.21 508.18,285.28 512,285.23 C516.01,285.26 520.13,286.24 524.04,287.11 C538.96,290.48 553.26,296.55 566.05,304.96 C587.39,318.88 604.35,339.3 614.11,362.84 C622.84,383.83 625.79,407.23 622.47,429.73 C619.25,452.7 609.38,474.73 594.57,492.56 C576.69,514.29 551.5,529.79 524.04,535.93 C518.61,537.11 513.55,538.4 507.95,537.47 C487.33,534.11 467.59,525.71 450.96,513.05 C430.86,497.89 415.36,476.6 407.22,452.76 C399.56,430.54 398.27,406.24 403.52,383.33 C408.28,362.13 418.67,342.34 433.24,326.24 C450.91,306.63 474.72,292.69 500.52,287.03 Z" fill="rgba(7,10,15,0.9)"/>
-        <path d="M360.32,631.25 C374.74,629.54 390.17,633.34 401.73,642.27 C412.25,650.3 419.35,662.39 421.5,675.42 C423.73,688.56 421.65,702.34 414.86,713.88 C407.95,725.72 396.27,734.41 383.06,737.99 C375.24,740.02 367.16,740.84 359.13,739.62 C344.42,737.78 330.64,730.13 321.99,718 C308.2,698.97 308.34,671.26 322.42,652.43 C331.34,640.29 345.43,632.82 360.32,631.25 Z" fill="#FFFFFF"/>
-        <path d="M526.02,631.46 C534.47,632.49 543.35,635.54 549.92,641.09 C555.1,645.5 558.74,651.48 558.63,658.46 L555.79,658.68 C554.6,655.23 554.34,651.87 552.29,648.72 C547.35,641.18 539.09,637.44 530.5,635.75 C519.84,633.71 507.89,634.97 498.33,640.33 C490.5,644.68 484.48,651.66 480.84,659.8 C476.61,669.31 475.35,679.72 475.95,690.04 C476.46,698.51 478.49,706.96 482.55,714.45 C487.31,723.18 495.09,730.17 504.51,733.52 C516.29,737.67 530.09,737.03 541.22,731.23 C547.65,728.03 552.36,722.97 556.33,717.1 C557.54,717.01 558.75,716.94 559.97,716.87 C556.02,725.05 549.07,731.07 540.99,734.99 C520.84,744.57 494.95,740.53 478.55,725.44 C463.18,711.35 457.92,688.77 463.97,669 C467.47,657.36 475.09,646.93 485.31,640.29 C497.1,632.47 512.07,629.43 526.02,631.46 Z" fill="#FFFFFF"/>
-        <path d="M784.56,631.62 C793.19,633.19 801.21,637.39 806.34,644.66 C808.98,648.57 810.88,653.55 810.49,658.33 L807.7,658.81 C806.76,655.04 806.28,651.12 804.28,647.73 C800.5,641.01 793.19,636.76 785.8,635.2 C778.38,633.67 770.31,634.26 763.34,637.3 C758.92,639.3 754.91,642.23 752.53,646.54 C750.12,650.77 749.6,655.94 751.53,660.45 C753.62,665.27 757.51,668.44 761.88,671.12 C772.8,677.73 786.24,681.05 797.25,686.75 C803.14,689.84 808.96,693.83 812.13,699.86 C814.96,705.06 815.16,711.42 814.06,717.12 C812.01,726.03 805.35,732.54 797.14,736.09 C786.14,740.73 773.39,741.42 761.91,738.19 C754.29,736.04 746.55,731.64 741.94,725.06 C738.88,720.95 737.47,716.15 737.26,711.07 C738.34,711.01 739.42,710.96 740.5,710.92 C741.17,714.63 741.68,718.08 743.6,721.41 C746.33,726.16 750.75,730 755.66,732.38 C764.19,736.69 774.45,737.57 783.74,735.69 C790.19,734.36 796.9,731.31 800.8,725.8 C803.98,721.39 804.77,715.48 802.53,710.48 C800.38,705.66 796.41,702.64 792,700.01 C780.09,693.14 766.42,690.03 754.39,682.61 C749.45,679.5 745.11,675.88 742.36,670.62 C738.01,662.26 739.18,651.38 745.03,644.03 C749.53,638.31 755.93,634.63 762.87,632.7 C769.97,630.82 777.31,630.17 784.56,631.62 Z" fill="#FFFFFF"/>
-        <path d="M209.51,632.57 C233.3,632.34 257.29,632.52 281.11,632.49 C281.12,633.51 281.13,634.53 281.13,635.55 C261.83,635.68 242.52,635.45 223.22,635.66 C223.2,651.99 223.14,668.33 223.25,684.66 C238.54,684.77 253.84,684.58 269.13,684.74 C269.08,685.73 269.03,686.72 268.99,687.71 C253.75,687.83 238.5,687.59 223.26,687.82 C223.1,703.23 223.25,718.65 223.2,734.06 C223.15,735.55 223.03,737.03 222.88,738.51 C218.4,738.57 213.93,738.58 209.44,738.49 C209.3,704.65 209.46,670.79 209.36,636.94 C209.37,635.47 209.37,634.04 209.51,632.57 Z" fill="#FFFFFF"/>
-        <path d="M604.86,632.47 C609.26,632.45 613.65,632.44 618.05,632.48 C618.5,654.64 618.04,676.86 618.27,699.04 C618.38,706.46 619.96,713.68 623.99,719.99 C627.9,726.2 634.02,730.72 640.95,733.03 C646.54,735 652.15,735.07 658,734.82 C666.87,734.47 675.82,730.4 681.46,723.47 C686.6,717.28 688.99,708.94 689.32,701.02 C689.39,678.17 689.22,655.31 689.4,632.46 C690.57,632.44 691.75,632.43 692.92,632.41 C693.47,636.29 693.26,640.1 693.27,644 C693.27,661.67 693.27,679.33 693.28,697 C693.17,706.4 691.79,715.47 686.42,723.42 C681.5,730.98 673.74,735.98 665.11,738.31 C649.18,742.56 629.35,739.6 617.2,727.8 C610.57,721.51 606.47,712.98 605.19,703.96 C604.44,698.91 604.66,694.08 604.64,689 C604.65,673.67 604.65,658.34 604.64,643 C604.61,639.49 604.55,635.98 604.86,632.47 Z" fill="#FFFFFF"/>
-        <path d="M360.44,634.61 C370.05,633.34 379.73,634.67 387.93,640.07 C396.92,645.84 402.6,655.42 405.49,665.53 C408.92,677.96 409.03,691.33 405.94,703.85 C403.63,712.76 399.39,721.23 392.47,727.46 C379.33,739.56 357.01,740.06 343.21,728.8 C336.97,723.89 332.54,716.55 329.84,709.17 C326.34,699.3 325.45,688.35 326.39,677.96 C327.35,667.68 330.28,657.82 336.38,649.39 C342.02,641.52 350.87,636.08 360.44,634.61 Z" fill="rgba(7,10,15,0.9)"/>
-      </svg>
-    </div>
-    <div class="footer-text">
-      Focus Group &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; May 2026
-    </div>
+  <div class="footer">
+    <svg class="footer-logo" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <path d="M503.01,283.91 C506.72,284.1 510.6,285.04 514.27,284.61 C531.46,282.43 549.21,284.28 565.78,289.2 C594.01,297.66 619.01,316.12 635.34,340.67 C649.23,361.29 656.88,386.11 656.78,410.99 C657.02,431.57 651.98,452.2 642.44,470.42 C631.07,492.31 613.22,510.66 591.75,522.76 C567.72,536.35 539.37,541.85 512,538.29 C487.65,541.46 462.35,537.41 440.2,526.81 C419.66,517.05 401.83,501.73 389.13,482.87 C376.94,464.92 369.46,443.76 367.74,422.12 C365.78,398.75 370.33,374.9 380.99,353.99 C393.11,330.01 412.93,310.06 436.89,297.88 C457.13,287.42 480.28,282.61 503.01,283.91 Z" fill="currentColor"/>
+      <path class="logo-counter" d="M500.52,287.03 C504.24,286.21 508.18,285.28 512,285.23 C516.01,285.26 520.13,286.24 524.04,287.11 C538.96,290.48 553.26,296.55 566.05,304.96 C587.39,318.88 604.35,339.3 614.11,362.84 C622.84,383.83 625.79,407.23 622.47,429.73 C619.25,452.7 609.38,474.73 594.57,492.56 C576.69,514.29 551.5,529.79 524.04,535.93 C518.61,537.11 513.55,538.4 507.95,537.47 C487.33,534.11 467.59,525.71 450.96,513.05 C430.86,497.89 415.36,476.6 407.22,452.76 C399.56,430.54 398.27,406.24 403.52,383.33 C408.28,362.13 418.67,342.34 433.24,326.24 C450.91,306.63 474.72,292.69 500.52,287.03 Z"/>
+      <path d="M360.32,631.25 C374.74,629.54 390.17,633.34 401.73,642.27 C412.25,650.3 419.35,662.39 421.5,675.42 C423.73,688.56 421.65,702.34 414.86,713.88 C407.95,725.72 396.27,734.41 383.06,737.99 C375.24,740.02 367.16,740.84 359.13,739.62 C344.42,737.78 330.64,730.13 321.99,718 C308.2,698.97 308.34,671.26 322.42,652.43 C331.34,640.29 345.43,632.82 360.32,631.25 Z" fill="currentColor"/>
+      <path d="M526.02,631.46 C534.47,632.49 543.35,635.54 549.92,641.09 C555.1,645.5 558.74,651.48 558.63,658.46 L555.79,658.68 C554.6,655.23 554.34,651.87 552.29,648.72 C547.35,641.18 539.09,637.44 530.5,635.75 C519.84,633.71 507.89,634.97 498.33,640.33 C490.5,644.68 484.48,651.66 480.84,659.8 C476.61,669.31 475.35,679.72 475.95,690.04 C476.46,698.51 478.49,706.96 482.55,714.45 C487.31,723.18 495.09,730.17 504.51,733.52 C516.29,737.67 530.09,737.03 541.22,731.23 C547.65,728.03 552.36,722.97 556.33,717.1 C557.54,717.01 558.75,716.94 559.97,716.87 C556.02,725.05 549.07,731.07 540.99,734.99 C520.84,744.57 494.95,740.53 478.55,725.44 C463.18,711.35 457.92,688.77 463.97,669 C467.47,657.36 475.09,646.93 485.31,640.29 C497.1,632.47 512.07,629.43 526.02,631.46 Z" fill="currentColor"/>
+      <path d="M784.56,631.62 C793.19,633.19 801.21,637.39 806.34,644.66 C808.98,648.57 810.88,653.55 810.49,658.33 L807.7,658.81 C806.76,655.04 806.28,651.12 804.28,647.73 C800.5,641.01 793.19,636.76 785.8,635.2 C778.38,633.67 770.31,634.26 763.34,637.3 C758.92,639.3 754.91,642.23 752.53,646.54 C750.12,650.77 749.6,655.94 751.53,660.45 C753.62,665.27 757.51,668.44 761.88,671.12 C772.8,677.73 786.24,681.05 797.25,686.75 C803.14,689.84 808.96,693.83 812.13,699.86 C814.96,705.06 815.16,711.42 814.06,717.12 C812.01,726.03 805.35,732.54 797.14,736.09 C786.14,740.73 773.39,741.42 761.91,738.19 C754.29,736.04 746.55,731.64 741.94,725.06 C738.88,720.95 737.47,716.15 737.26,711.07 C738.34,711.01 739.42,710.96 740.5,710.92 C741.17,714.63 741.68,718.08 743.6,721.41 C746.33,726.16 750.75,730 755.66,732.38 C764.19,736.69 774.45,737.57 783.74,735.69 C790.19,734.36 796.9,731.31 800.8,725.8 C803.98,721.39 804.77,715.48 802.53,710.48 C800.38,705.66 796.41,702.64 792,700.01 C780.09,693.14 766.42,690.03 754.39,682.61 C749.45,679.5 745.11,675.88 742.36,670.62 C738.01,662.26 739.18,651.38 745.03,644.03 C749.53,638.31 755.93,634.63 762.87,632.7 C769.97,630.82 777.31,630.17 784.56,631.62 Z" fill="currentColor"/>
+      <path d="M209.51,632.57 C233.3,632.34 257.29,632.52 281.11,632.49 C281.12,633.51 281.13,634.53 281.13,635.55 C261.83,635.68 242.52,635.45 223.22,635.66 C223.2,651.99 223.14,668.33 223.25,684.66 C238.54,684.77 253.84,684.58 269.13,684.74 C269.08,685.73 269.03,686.72 268.99,687.71 C253.75,687.83 238.5,687.59 223.26,687.82 C223.1,703.23 223.25,718.65 223.2,734.06 C223.15,735.55 223.03,737.03 222.88,738.51 C218.4,738.57 213.93,738.58 209.44,738.49 C209.3,704.65 209.46,670.79 209.36,636.94 C209.37,635.47 209.37,634.04 209.51,632.57 Z" fill="currentColor"/>
+      <path d="M604.86,632.47 C609.26,632.45 613.65,632.44 618.05,632.48 C618.5,654.64 618.04,676.86 618.27,699.04 C618.38,706.46 619.96,713.68 623.99,719.99 C627.9,726.2 634.02,730.72 640.95,733.03 C646.54,735 652.15,735.07 658,734.82 C666.87,734.47 675.82,730.4 681.46,723.47 C686.6,717.28 688.99,708.94 689.32,701.02 C689.39,678.17 689.22,655.31 689.4,632.46 C690.57,632.44 691.75,632.43 692.92,632.41 C693.47,636.29 693.26,640.1 693.27,644 C693.27,661.67 693.27,679.33 693.28,697 C693.17,706.4 691.79,715.47 686.42,723.42 C681.5,730.98 673.74,735.98 665.11,738.31 C649.18,742.56 629.35,739.6 617.2,727.8 C610.57,721.51 606.47,712.98 605.19,703.96 C604.44,698.91 604.66,694.08 604.64,689 C604.65,673.67 604.65,658.34 604.64,643 C604.61,639.49 604.55,635.98 604.86,632.47 Z" fill="currentColor"/>
+      <path class="logo-counter" d="M360.44,634.61 C370.05,633.34 379.73,634.67 387.93,640.07 C396.92,645.84 402.6,655.42 405.49,665.53 C408.92,677.96 409.03,691.33 405.94,703.85 C403.63,712.76 399.39,721.23 392.47,727.46 C379.33,739.56 357.01,740.06 343.21,728.8 C336.97,723.89 332.54,716.55 329.84,709.17 C326.34,699.3 325.45,688.35 326.39,677.96 C327.35,667.68 330.28,657.82 336.38,649.39 C342.02,641.52 350.87,636.08 360.44,634.61 Z"/>
+    </svg>
+    <div class="footer-meta">Focus Group &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; May 2026</div>
   </div>
 
 </div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn  = document.getElementById('theme-btn');
+
+    var saved = localStorage.getItem('focus-theme-gold');
+    if (saved === 'light') root.setAttribute('data-theme', 'light');
+
+    btn.addEventListener('click', function () {
+      var isLight = root.getAttribute('data-theme') === 'light';
+      var next    = isLight ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('focus-theme-gold', next);
+    });
+  })();
+</script>
+
 </body>
 </html>
